@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-    openai::start();
+    openai::start("sk-on-Jo5FAGExsug1vrAvXCQ", "", true, "https://agino.me/");
 
     auto edit = openai::edit().create(R"(
     {

@@ -65,3 +65,4 @@ foreach( name ${TARGETS_EXAMPLES} )
     )
     target_link_libraries(${name} ${CURL_LIBRARIES})
  endforeach()
+ 

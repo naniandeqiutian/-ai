@@ -1,25 +1,38 @@
 #include "openai.hpp"
-
+#include <string>
 #include <iostream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 int main() {
-    openai::start("sk-xxx","",true,"https://agino.me/"); // Will use the api key provided by `OPENAI_API_KEY` environment variable
-    // openai::start("your_API_key", "optional_organization"); // Or you can handle it yourself
+    // 启动 OpenAI 客户端
+    openai::start("sk-on-Jo5FAGExsug1vrAvXCQ", "", true, "https://agino.me/");
 
-    auto completion = openai::chat().create(R"(
-    {
-        "model": "gpt-3.5-turbo",
-        "messages": [{"role": "user", "content": "What things can I do in Amsterdam?"}],
-        "max_tokens": 4096,
-        "temperature": 0
+    std::string input;
+    std::cout << "你: ";
+    std::getline(std::cin, input); // 使用 getline 读取整行
+
+    // 创建 JSON 对象
+    json request = {
+        {"model", "gpt-3.5-turbo"},
+        {"messages", json::array({{ 
+            {"role", "user"},
+            {"content", "What do you think about" + input}
+        }})},
+        {"max_tokens", 4096},
+        {"temperature", 0}
+    };
+
+    // 调用 OpenAI API 进行聊天
+    auto completion = openai::chat().create(request);
+
+    // 检查 API 响应并输出聊天结果
+    if (completion.contains("choices") && !completion["choices"].empty()) {
+        std::cout << "AI: " << completion["choices"][0]["message"]["content"] << std::endl;
+    } else {
+        std::cout << "Error: No valid response from OpenAI API" << std::endl;
     }
-    )"_json); // Using user-defined (raw) string literals
-    std::cout << "Response is:\n" << completion.dump(2) << '\n'; 
 
-    auto image = openai::image().create({
-        { "prompt", "A logo with a cello in a heart"},
-        { "n", 1 },
-        { "size", "512x512" }
-    }); // Using initializer lists
-    std::cout << "Image URL is: " << image["data"][0]["url"] << '\n'; 
+    return 0;
 }

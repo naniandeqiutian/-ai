@@ -3,15 +3,18 @@
 #include <iostream>
 
 int main() {
-    openai::start();
+    openai::start("sk-on-Jo5FAGExsug1vrAvXCQ", "", true, "https://agino.me/");
 
-    auto completion = openai::completion().create(R"(
+    auto chat_completion = openai::chat().create(R"(
     {
-        "model": "text-davinci-003",
-        "prompt": "Say this is a test",
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {"role": "user", "content": "Say this is a test"}
+        ],
         "max_tokens": 7,
         "temperature": 0
     }
     )"_json);
-    std::cout << "Response is:\n" << completion.dump(2) << '\n'; 
+    
+    std::cout << "Response is:\n" << chat_completion.dump(2) << '\n'; 
 }
